@@ -28,7 +28,7 @@ public class MazeProblem {
 
             // Get the index of Starting element 'S'.
             final Integer[] point = IntStream.range(0, mazeValues.length)
-                    .filter(counter -> String.valueOf(mazeValues[counter]).indexOf('S') > 0)
+                    .filter(counter -> String.valueOf(mazeValues[counter]).indexOf('S') >= 0)
                     .mapToObj(counter -> new Integer[]{counter, String.valueOf(mazeValues[counter]).indexOf('S')})
                     .findAny().orElse(null);
 

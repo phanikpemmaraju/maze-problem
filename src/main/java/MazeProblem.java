@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -13,7 +14,7 @@ public class MazeProblem {
 
     private List blocks = asList('#', '.');
 
-    public static void main(String... args) throws URISyntaxException {
+    public static void main(String... args) {
         try {
             final MazeProblem mazeProblem = new MazeProblem();
 
@@ -34,17 +35,16 @@ public class MazeProblem {
             }
 
             Stream.of(mazeValues)
-                    .flatMap(Stream::of)
                     .forEach(System.out::println);
 
         } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
+            System.out.println("Exception : {} " + e.getMessage());
         }
 
     }
 
     public char[][] mazePath(final char[][] maze) throws IllegalArgumentException{
-        if(Objects.isNull(maze) || maze.length <= 0){
+        if(Objects.isNull(maze) || maze.length == 0){
             throw new IllegalArgumentException();
         }
 
@@ -100,6 +100,8 @@ public class MazeProblem {
         if (result) {
             return true;
         }
+        // Reset the traversed path to empty space
+        values[x][y] = ' ';
         return result;
     }
 

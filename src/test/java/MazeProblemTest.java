@@ -1,42 +1,37 @@
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Created by phani16 on 04/08/2019.
  */
 public class MazeProblemTest {
 
-    @Rule
-    public ExpectedException exception= ExpectedException.none();
-
     private MazeProblem mazeProblem;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mazeProblem = new MazeProblem();
     }
 
     @Test
-    public void mazePathForNullDataThrowsIllegalArgumentException() {
-        exception.expect(IllegalArgumentException.class);
-        mazeProblem.mazePath(null);
+    void mazePathForNullDataThrowsIllegalArgumentException() {
+        assertThatThrownBy(() -> mazeProblem.mazePath(null))
+                .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void mazePathThrowsForEmptyDataIllegalArgumentException() {
-        exception.expect(IllegalArgumentException.class);
-        char[][] empty = new char[][]{};
-        mazeProblem.mazePath(empty);
+    void mazePathThrowsForEmptyDataIllegalArgumentException() {
+        assertThatThrownBy(() -> mazeProblem.mazePath(new char[][]{}))
+                .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void mazePathReturnsResponseSameAsInput() {
+    void mazePathReturnsResponseSameAsInput() {
         final char[][] arrays = new char[][] {
                 { '#', '#','#' , '#'},
                 { '#', ' ', 'E', '#' },
@@ -56,7 +51,7 @@ public class MazeProblemTest {
     }
 
     @Test
-    public void mazePathReturnsResponseForAsymetricData() {
+    void mazePathReturnsResponseForAsymmetricData() {
         final char[][] arrays = new char[][] {
                 { '#', '#','#' , '#'},
                 { '#', ' ', 'E', '#' },
@@ -70,11 +65,11 @@ public class MazeProblemTest {
         } ;
 
         mazeProblem.mazePath(arrays);
-        assertThat(expected, equalTo(arrays));
+        assertThat(expected, is(equalTo(arrays)));
     }
 
     @Test
-    public void mazePathReturnsResponseForSymetricData() {
+    void mazePathReturnsResponseForSymmetricData() {
         final char[][] arrays = new char[][] {
                 { '#', '#','#' , '#'},
                 { '#', ' ', 'E', '#' },
@@ -90,6 +85,6 @@ public class MazeProblemTest {
         } ;
 
         mazeProblem.mazePath(arrays);
-        assertThat(expected, equalTo(arrays));
+        assertThat(expected, is(equalTo(arrays)));
     }
 }

@@ -31,16 +31,6 @@ public class MazeProblem {
                     .mapToObj(counter -> new Point(counter,String.valueOf(mazeValues[counter]).indexOf('S')))
                     .findAny().orElse(null);
 
-            // Get the index of Starting element 'S'.
-            final Integer[] point = IntStream.range(0, mazeValues.length)
-                    .filter(counter -> String.valueOf(mazeValues[counter]).indexOf('S') >= 0)
-                    .mapToObj(counter -> new Integer[]{counter, String.valueOf(mazeValues[counter]).indexOf('S')})
-                    .findAny().orElse(null);
-
-//            if (Objects.nonNull(point)) {
-//                mazeProblem.findPath(mazeValues, point[0], point[1]);
-//            }
-
             if (Objects.nonNull(startingPoint)) {
                 mazeProblem.findPath(mazeValues, startingPoint);
             }
@@ -60,59 +50,15 @@ public class MazeProblem {
         }
 
         // Get the index of Starting element 'S'.
-        final Integer[] point = IntStream.range(0, maze.length)
-                .filter(counter -> String.valueOf(maze[counter]).indexOf('S') >= 0)
-                .mapToObj(counter -> new Integer[]{counter, String.valueOf(maze[counter]).indexOf('S')})
+        Point startingPoint = IntStream.range(0, maze.length)
+                .filter(counter -> hasStartPoint.test(maze[counter]))
+                .mapToObj(counter -> new Point(counter,String.valueOf(maze[counter]).indexOf('S')))
                 .findAny().orElse(null);
 
-        if (Objects.nonNull(point)) {
-            this.findPath(maze, point[0], point[1]);
+        if (Objects.nonNull(startingPoint)) {
+            this.findPath(maze, startingPoint);
         }
 
-    }
-
-    private boolean exploreNeighbourNode(final char[][] values, int x, int y) {
-        boolean result;
-
-        // Success
-        if (values[x][y] == 'E') {
-            return true;
-        }
-
-        // Failure, if its already visited
-        if (blocks.contains(values[x][y])) {
-            return false;
-        }
-
-        // Check for empty space and set the value to '.' to make traversable.
-        values[x][y] = '.';
-
-        // Traverse Up
-        result = exploreNeighbourNode(values, x - 1, y);
-        if (result) {
-            return true;
-        }
-
-        // Traverse Right
-        result = exploreNeighbourNode(values, x, y + 1);
-        if (result) {
-            return true;
-        }
-
-        // Traverse Down
-        result = exploreNeighbourNode(values, x + 1, y);
-        if (result) {
-            return true;
-        }
-
-        // Traverse Left
-        result = exploreNeighbourNode(values, x, y - 1);
-        if (result) {
-            return true;
-        }
-        // Reset the traversed path to empty space
-        values[x][y] = ' ';
-        return result;
     }
 
     private boolean exploreNeighbourNode(final char[][] values, Point point) {
@@ -159,13 +105,6 @@ public class MazeProblem {
         return result;
     }
 
-
-    private void findPath(char[][] values, int x, int y) {
-        if (exploreNeighbourNode(values, x, y)) {
-            // Resetting the same value. Start Value
-            values[x][y] = 'S';
-        }
-    }
 
     private void findPath(char[][] values, Point point) {
         if (exploreNeighbourNode(values, point)) {

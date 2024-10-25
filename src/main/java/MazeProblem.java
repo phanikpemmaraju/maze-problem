@@ -12,14 +12,14 @@ import static java.util.Arrays.asList;
 
 public class MazeProblem {
 
-    private List blocks = asList('#', '.');
+    private List blocks = asList('.','X');
 
     public static void main(String... args) {
         try {
             final MazeProblem mazeProblem = new MazeProblem();
 
             // Read the file data.
-            char[][] mazeValues = Files.readAllLines(Paths.get(MazeProblem.class.getClassLoader().getResource("maze.txt").toURI()))
+            char[][] mazeValues = Files.readAllLines(Paths.get(MazeProblem.class.getClassLoader().getResource("maze1.txt").toURI()))
                     .stream()
                     .map(String::toCharArray)
                     .toArray(char[][]::new);
@@ -43,7 +43,7 @@ public class MazeProblem {
 
     }
 
-    public char[][] mazePath(final char[][] maze) throws IllegalArgumentException{
+    public void mazePath(final char[][] maze) throws IllegalArgumentException{
         if(Objects.isNull(maze) || maze.length == 0){
             throw new IllegalArgumentException();
         }
@@ -58,7 +58,6 @@ public class MazeProblem {
             this.findPath(maze, point[0], point[1]);
         }
 
-        return maze;
     }
 
     private boolean exploreNeighbourNode(final char[][] values, int x, int y) {
@@ -69,7 +68,7 @@ public class MazeProblem {
             return true;
         }
 
-        // Failure
+        // Failure, if its already visited
         if (blocks.contains(values[x][y])) {
             return false;
         }
@@ -78,24 +77,24 @@ public class MazeProblem {
         values[x][y] = '.';
 
         // Traverse Up
-        result = exploreNeighbourNode(values, x, y + 1);
-        if (result) {
-            return true;
-        }
-
-        // Traverse Left
         result = exploreNeighbourNode(values, x - 1, y);
         if (result) {
             return true;
         }
 
         // Traverse Right
-        result = exploreNeighbourNode(values, x + 1, y);
+        result = exploreNeighbourNode(values, x, y + 1);
         if (result) {
             return true;
         }
 
         // Traverse Down
+        result = exploreNeighbourNode(values, x + 1, y);
+        if (result) {
+            return true;
+        }
+
+        // Traverse Left
         result = exploreNeighbourNode(values, x, y - 1);
         if (result) {
             return true;
@@ -112,5 +111,4 @@ public class MazeProblem {
             values[x][y] = 'S';
         }
     }
-
 }

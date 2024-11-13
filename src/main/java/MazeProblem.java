@@ -35,7 +35,7 @@ public class MazeProblem {
             if (Objects.nonNull(startingPoint)) {
 //                mazeProblem.findPath(mazeValues, startingPoint);
                 boolean status = mazeProblem.iterativeDFS(mazeValues, startingPoint);
-                System.out.println("Ststus: " + status);
+                System.out.println("Status: " + status);
             }
 
             Stream.of(mazeValues)
@@ -59,7 +59,8 @@ public class MazeProblem {
                 .findAny().orElse(null);
 
         if (Objects.nonNull(startingPoint)) {
-            this.findPath(maze, startingPoint);
+            //this.findPath(maze, startingPoint);
+            this.iterativeDFS(maze, startingPoint);
         }
 
     }
@@ -119,27 +120,30 @@ public class MazeProblem {
     }
 
     // Uses stack implementation
+
+    // Time complexity O(M*N) => M,N are dimensions of maze
+    // Space complexity O(M*N) => worst case if we visit every cell.
     private boolean iterativeDFS(char[][] maze, Point point) {
         Stack<Point> stack = new Stack<>();
         stack.push(point);
 
         while (!stack.isEmpty()) {
             Point current = stack.pop();
-            int x = current.xPos();
-            int y = current.yPos();
-
-            if (maze[x][y] == 'E') {
+            if (maze[current.xPos()][current.yPos()] == 'E') {
                 return true;
             }
 
-            maze[x][y] = '.';
+            if (maze[current.xPos()][current.yPos()] != 'S') {
+                maze[current.xPos()][current.yPos()] = '.';
+            }
+
 
             for (Direction direction : Direction.values()) {
-                int newX = x + direction.getX();
-                int newY = y + direction.getY();
+                int newX = current.xPos() + direction.getX();
+                int newY = current.yPos() + direction.getY();
 
                 Point newPoint = new Point(newX, newY);
-                if (isValidMove(maze, newPoint)) {
+                if (isExplorable(maze, newPoint)) {
                     stack.push(newPoint);
                 }
             }
@@ -148,8 +152,7 @@ public class MazeProblem {
         return false;
     }
 
-    private boolean isValidMove(char[][] maze, Point point) {
-        // Check boundaries and if it's an open path or endpoint 'E'
+    private boolean isExplorable(char[][] maze, Point point) {
         return point.xPos() >= 0 && point.xPos() < maze.length && point.yPos() >= 0 && point.yPos() < maze[0].length &&
                 (maze[point.xPos()][point.yPos()] == ' ' || maze[point.xPos()][point.yPos()] == 'E');
     }

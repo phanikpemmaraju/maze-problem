@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -32,7 +33,9 @@ public class MazeProblem {
                     .findAny().orElse(null);
 
             if (Objects.nonNull(startingPoint)) {
-                mazeProblem.findPath(mazeValues, startingPoint);
+//                mazeProblem.findPath(mazeValues, startingPoint);
+                boolean status = mazeProblem.iterativeDFS(mazeValues, startingPoint);
+                System.out.println("Ststus: " + status);
             }
 
             Stream.of(mazeValues)
@@ -61,6 +64,7 @@ public class MazeProblem {
 
     }
 
+    // Uses recursion
     private boolean exploreNeighbourNode(final char[][] values, Point point) {
         boolean result;
 
@@ -76,6 +80,7 @@ public class MazeProblem {
 
         // Check for empty space and set the value to '.' to make traversable.
         values[point.xPos()][point.yPos()] = '.';
+        System.out.println("Traversing at Point: " + point);
 
         // Traverse Up
         result = exploreNeighbourNode(values, point.traverseForward());
@@ -112,6 +117,44 @@ public class MazeProblem {
             values[point.xPos()][point.yPos()] = 'S';
         }
     }
+
+    // Uses stack implementation
+    private boolean iterativeDFS(char[][] maze, Point point) {
+        Stack<Point> stack = new Stack<>();
+        stack.push(point);
+
+        while (!stack.isEmpty()) {
+            Point current = stack.pop();
+            int x = current.xPos();
+            int y = current.yPos();
+
+            if (maze[x][y] == 'E') {
+                return true;
+            }
+
+            maze[x][y] = '.';
+
+            for (Direction direction : Direction.values()) {
+                int newX = x + direction.getX();
+                int newY = y + direction.getY();
+
+                Point newPoint = new Point(newX, newY);
+                if (isValidMove(maze, newPoint)) {
+                    stack.push(newPoint);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isValidMove(char[][] maze, Point point) {
+        // Check boundaries and if it's an open path or endpoint 'E'
+        return point.xPos() >= 0 && point.xPos() < maze.length && point.yPos() >= 0 && point.yPos() < maze[0].length &&
+                (maze[point.xPos()][point.yPos()] == ' ' || maze[point.xPos()][point.yPos()] == 'E');
+    }
+
+
 
 
 }

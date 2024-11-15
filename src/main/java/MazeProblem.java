@@ -3,9 +3,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -15,6 +13,7 @@ import static java.util.Arrays.asList;
 public class MazeProblem {
 
     private final List<Character> blocks = asList('.','X', '#');
+
     private static final Predicate<char[]> hasStartPoint = mazeRow -> String.valueOf(mazeRow).indexOf('S') >= 0;
 
     public static void main(String... args) {
@@ -124,11 +123,11 @@ public class MazeProblem {
     // Time complexity O(M*N) => M,N are dimensions of maze
     // Space complexity O(M*N) => worst case if we visit every cell.
     private boolean iterativeDFS(char[][] maze, Point point) {
-        Stack<Point> stack = new Stack<>();
-        stack.push(point);
+        Deque<Point> deque = new ArrayDeque<>();
+        deque.addLast(point);
 
-        while (!stack.isEmpty()) {
-            Point current = stack.pop();
+        while (!deque.isEmpty()) {
+            Point current = deque.pop();
             if (maze[current.xPos()][current.yPos()] == 'E') {
                 return true;
             }
@@ -144,7 +143,7 @@ public class MazeProblem {
 
                 Point newPoint = new Point(newX, newY);
                 if (isExplorable(maze, newPoint)) {
-                    stack.push(newPoint);
+                    deque.push(newPoint);
                 }
             }
         }
